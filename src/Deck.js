@@ -13,6 +13,7 @@ const ShuffleCard = () => {
     const [autoDraw, setAutoDraw] = useState(false);
     const timerId = useRef(null);
 
+    /* At mount: load deck from API into state. */
     useEffect(() => {
         async function getDeckId() {
             let d = await axios.get(`${API_BASE_URL}/new/shuffle`);
@@ -22,6 +23,8 @@ const ShuffleCard = () => {
         getDeckId();
     }, []);
 
+    /* if no cards left, show alert message 
+    else, draw a card, add it to drawnCards array, and add 1 to numCardsDrawn */
     const drawCard = async () => {
         if (numCardsDrawn === 52) {
             setAutoDraw(false);
@@ -42,6 +45,7 @@ const ShuffleCard = () => {
         }
     }
 
+    /* if autoDraw is true, run drawCard function each second */
     useEffect(() => {
         if (autoDraw) {
             timerId.current = setInterval(() => {
@@ -51,12 +55,16 @@ const ShuffleCard = () => {
             clearInterval(timerId.current);
         }
         return () => clearInterval(timerId.current);
+        
+    /* this hook runs whenever numCardsDrawn changes due 
+    to autoDraw, and numCardsDrawn will be updated too */
     }, [autoDraw, numCardsDrawn])
       
     const toggleAutoDraw = () => {
         setAutoDraw(autoDraw => !autoDraw);
     }
 
+    /* maps drawnCards array into individual Card components */
     const cards = drawnCards.map(c => (
         <Card key={c.id} name={c.name} image={c.image_url} />
     ));
