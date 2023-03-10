@@ -10,6 +10,7 @@ const ShuffleCard = () => {
     const [drawnCards, setDrawnCards] = useState([]);
     const [numCardsDrawn, setNumCardsDrawn] = useState(0);
 
+    /* For auto-draw logic */
     const [autoDraw, setAutoDraw] = useState(false);
     const timerId = useRef(null);
 
@@ -75,13 +76,24 @@ const ShuffleCard = () => {
         setAutoDraw(false);
     }
 
-    return (
-        <div>
+    /* renders JSX needed to populate game when !isLoading */
+    const renderContent = () => {
+        return (
+          <>
             <button onClick={drawCard}>Draw a card</button>
-            <button onClick={toggleAutoDraw}>{(autoDraw) ? 'Stop drawing' : 'Start drawing'}</button>
+            <button onClick={toggleAutoDraw}>
+              {(autoDraw) ? 'Stop drawing' : 'Start drawing'}
+            </button>
             <button onClick={restartGame}>Restart game</button>
             <p>Number of cards drawn: {numCardsDrawn}</p>
             {cards}
+          </>
+        );
+      }
+
+    return (
+        <div>
+            {(isLoading) ? <i>(Loading...)</i> : renderContent()}
         </div>
     );
 }
